@@ -64,16 +64,41 @@ export default function TaskList() {
     const handleDeleteTask = (task) => {
         setTasks(produce(tasks, draft => {
             const index = draft.findIndex(t => t.id === task.id);
-            draft[index].shouldDelete = true
+            draft[index].shouldDelete = !draft[index].shouldDelete
         }));
     };
 
     const saveTasks = (task) => {
-        const newTasks = produce(tasks, draft => {
-            for(var i = draft.length - 1; i > 0; i--){
-                var item = draft[i]
-                if(item.shouldDelete == true){
-                    if(item.id > 0){
+        var createInfoArr = []
+        for(var i = 0; i < tasks.length; i++){
+            const item = tasks[i]
+            if(item.created == true && (item.shouldDelete == false || item.shouldDelete == null)){
+                const xd = fetch(`http://demo2.z-bit.ee/tasks`, {
+                method: "POST",
+                body: JSON.stringify(item),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }})
+                .then((response) => response.json())
+                .then((data) => {
+                    var obj = {oldId: item.id, newId: data.id}
+                    return obj
+                });
+
+                createInfoArr.push(xd)
+            }
+        }
+
+        Promise.all(createInfoArr).then((values) => {
+            setTasks(produce(tasks, draft => {
+                for(var i = draft.length - 1; i >= 0; i--){
+                    var item = draft[i]
+                    var ifEmpty = item.title.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
+                    if(ifEmpty == ""){item.title = "Task " + item.id}
+                    if(item.shouldDelete == true && item.created == true){
+                        draft.splice(draft.findIndex(t => t.id === item.id), 1);
+                    } else if(item.shouldDelete == true){
                         fetch(`http://demo2.z-bit.ee/tasks/${item.id}`, {
                         method: "DELETE",
                         body: Empty,    
@@ -81,40 +106,27 @@ export default function TaskList() {
                             'Content-Type': 'application/json',
                             'Authorization': 'Bearer ' + token
                         }})
-                    }
-                    draft.splice(draft.findIndex(t => t.id === item.id), 1);
-                } else if(item.created == true){
-                    item.created = false
-
-                    var xd = fetch(`http://demo2.z-bit.ee/tasks`, {
-                    method: "POST",
-                    body: JSON.stringify(item),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }})
-                    .then((response) => response.json())
-                    .then((data) => {
-                        draft.id = data.id
-                    });
-
-                    
-
-                } else if(item.changed == true){
-                    item.changed = false
-                    fetch(`http://demo2.z-bit.ee/tasks/${item.id}`, {
-                    method: "PUT",
-                    body: JSON.stringify(item),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }})
-                    .then((response) => response.json())
-                    .then((data) => {});
-                }                
-            }
+                        draft.splice(draft.findIndex(t => t.id === item.id), 1);
+                    } else if(item.created == true){
+                        item.created = false
+                        const index = values.findIndex(t => t.oldId === item.id);
+                        item.id = values[index].newId
+                    } else if(item.changed == true){
+                        item.changed = false
+                        fetch(`http://demo2.z-bit.ee/tasks/${item.id}`, {
+                        method: "PUT",
+                        body: JSON.stringify(item),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }})
+                        .then((response) => response.json())
+                        .then((data) => {});
+                    }                
+                }
+                createInfoArr = []
+            }));
         });
-        setTasks(newTasks);
     };
 
     return (
@@ -128,17 +140,16 @@ export default function TaskList() {
                     size="small"
                     bordered
                     dataSource={tasks}
-                    renderItem={(task) => <List.Item key={task.id}>
-                        <Row type="flex" justify="space-between" align="middle" style={{ backgroundColor: task.shouldDelete == true? 'red': 'white', width: '100%'}}>
+                    renderItem={(task) => <List.Item style={{backgroundColor: task.shouldDelete == true? 'red': 'white'}} key={task.id}>
+                        <Row type="flex" justify="space-between" align="middle" style={{ width: '100%'}}>
                             <Space>
                                 <Checkbox checked={task.marked_as_done} onChange={(e) => handleCompletedChange(task, e)} />
                                 <Input value={task.title} onChange={(event) => handleNameChange(task, event)} />
                             </Space>
-                            <Button type="text" onClick={() => handleDeleteTask(task)}><DeleteOutlined /></Button>
+                            <Button type="text" onClick={() => handleDeleteTask(task)}><DeleteOutlined style={{color: task.shouldDelete == true? 'white': 'black'}} /></Button>
                         </Row>
                     </List.Item>}
                 />
-                
             </Col>
         </Row>
     )
