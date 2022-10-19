@@ -3,11 +3,13 @@ import { Input, Button, Checkbox, List, Col, Row, Space, Divider, Empty } from "
 import produce from "immer";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
 var _ = require('lodash');
 
 
 export default function TaskList() {
     const [tasks, setTasks] = useState();
+    const navigate = useNavigate();
 
     var token;
     if(localStorage.getItem("todoAuthToken")){
@@ -15,7 +17,9 @@ export default function TaskList() {
     }
 
     useEffect(() => {
-        if(!token) return;
+        if(!token){
+            navigate("/login");
+        }
         fetch('http://demo2.z-bit.ee/tasks', {
             method: "GET",
             headers: {

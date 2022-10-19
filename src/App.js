@@ -13,6 +13,7 @@ function App() {
         <Route path="/" element={<TaskList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="*" element={<TaskList />} />
       </Routes>
     </Router>
   );
