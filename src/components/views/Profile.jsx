@@ -2,10 +2,10 @@ import { Form, Input, Button, Row, Col, notification } from "antd";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom"
 
-export default function Register() {
+export default function Profile() {
     return (
         <Row>
-            <h1>Register Page TBD</h1>
+            <h1>Profile Page TBD</h1>
         </Row>
     )
 }

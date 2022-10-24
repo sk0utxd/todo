@@ -4,6 +4,7 @@ import TaskList from './components/views/TaskList';
 import Login from './components/views/Login';
 import Logout from './components/views/Logout';
 import Register from './components/views/Register';
+import Profile from './components/views/Profile';
 import 'antd/dist/antd.css';
 import './App.css';
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<TaskList />} />
       </Routes>
     </Router>

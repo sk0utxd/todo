@@ -1,9 +1,9 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Input, Button, Checkbox, List, Col, Row, Space, Divider, Empty } from "antd";
 import produce from "immer";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 var _ = require('lodash');
 
 
@@ -138,8 +138,21 @@ export default function TaskList() {
         <Row type="flex" justify="center" style={{minHeight: '100vh', marginTop: '6rem'}}>
             <Col span={12}>
                 <h1>Task List</h1>
-                <Button onClick={handleAddTask}>Add Task</Button>
-                <Button onClick={saveTasks} className={"saveBtn"}>Save Tasks</Button>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div>
+                        <Button onClick={handleAddTask}>Add Task</Button>
+                        <Button onClick={saveTasks} className={"saveBtn"}>Save Tasks</Button>
+                    </div>
+                    <div>
+                        <Link to={`/profile`}>
+                            <Button role="link" style={{marginRight: '20px'}}>Profile</Button>
+                        </Link>
+                        <Link to={`/logout`}>
+                            <Button role="link" style={{backgroundColor: 'red', color: 'white'}}>Log Out</Button>
+                        </Link>
+                    </div>
+                    
+                </div>
                 <Divider />
                 <List
                     size="small"
