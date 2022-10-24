@@ -5,19 +5,22 @@ import { useEffect } from "react";
 
 export default function Login() {
     const navigate = useNavigate();
-
-    const gigaSus = () => {
-        navigate("/register")
-    }
-
+    
     var token;
+    var userId;
     if(localStorage.getItem("todoAuthToken")){
         token = localStorage.getItem("todoAuthToken")
+        userId = localStorage.getItem("userId")
     }
 
     useEffect(() => {
+        if(!userId && token){
+            navigate("/logout");
+            return
+        }
         if(token){
             navigate("/tasks");
+            return
         }
     }, []);
 
@@ -31,7 +34,6 @@ export default function Login() {
         })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data)
             if(data.status == 400){
                 notification.error({
                     message: 'Wrong username or password'
@@ -40,6 +42,7 @@ export default function Login() {
                 notification.success({
                     message: 'Logged in'
                 });
+                localStorage.setItem("todoUser", data.id)
                 localStorage.setItem("todoAuthToken", data.access_token)
                 navigate("/");
             }

@@ -8,6 +8,7 @@ export default function Logout() {
   useEffect(() => {
     // TODO run logout function to clear session token
     localStorage.removeItem("todoAuthToken")
+    localStorage.removeItem("todoUser")
     navigate("/login");
   }, [navigate]);
 
