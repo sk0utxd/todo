@@ -19,6 +19,7 @@ export default function TaskList() {
     useEffect(() => {
         if(!token){
             navigate("/login");
+            return
         }
         fetch('http://demo2.z-bit.ee/tasks', {
             method: "GET",

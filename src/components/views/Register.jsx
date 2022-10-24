@@ -1,26 +1,9 @@
 import { Form, Input, Button, Row, Col, notification } from "antd";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom"
 
 export default function Login() {
     const navigate = useNavigate();
-
-    const gigaSus = () => {
-        navigate("/register")
-    }
-
-    var token;
-    if(localStorage.getItem("todoAuthToken")){
-        token = localStorage.getItem("todoAuthToken")
-    }
-
-    useEffect(() => {
-        if(token){
-            navigate("/tasks");
-        }
-    }, []);
-
     const onFinish = (values) => {
         fetch('http://demo2.z-bit.ee/users/get-token', {
             method: "POST",
@@ -76,7 +59,7 @@ export default function Login() {
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <Button type="primary" htmlType="submit">Login</Button>
                             <Link to={`/register`}>
-                                <Button role="link">Sign up</Button>
+                                <button role="link">Sign up</button>
                             </Link>
                         </div>
                     </Form.Item>
