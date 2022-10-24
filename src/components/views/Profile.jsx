@@ -30,14 +30,68 @@ export default function Profile() {
         .then((data) => {
             setProfile(data)
         });
-      }, []);
+    }, []);
+
+    const onFinish = (values) => {
+        // fetch(`http://demo2.z-bit.ee/users/${userId}`, {
+        //     method: "PUT",
+        //     body: JSON.stringify(values.newPassword),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // })
+        // .then((response) => response.json())
+        // .then((data) => {
+        //     if(data.status == 400){
+        //         notification.error({
+        //             message: 'Wrong username or password'
+        //         });
+        //     } else {
+        //         notification.success({
+        //             message: 'Logged in'
+        //         });
+        //         localStorage.setItem("todoUser", data.id)
+        //         localStorage.setItem("todoAuthToken", data.access_token)
+        //         navigate("/");
+        //     }
+        // });
+        console.log(values.newPassword)
+    };
 
 
     return (
-        <Row>
-            <h1>Profile Page TBD</h1>
-            <Divider />
-            <h1>{JSON.stringify(profile)}</h1>
+        <Row type="flex" justify="center" align="middle" style={{minHeight: '100vh'}}>
+            <Col span={4}>
+                <h1>Login</h1>
+                <Form
+                    name="basic"
+                    layout="vertical"
+                    initialValues={{ newPassword: ""}}
+                    onFinish={onFinish}
+                >
+                    <Form.Item
+                        label="user"
+                        id="userBox"
+                        name="username"
+                        rules={[{ message: `User ${profile.username} - not you?` }]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+                    <Form.Item
+                        label="New Password"
+                        id="unBox"
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your new password!' }]}
+                    >
+                        <Input.newPassword />
+                    </Form.Item>
+                    <Form.Item>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Button type="primary" htmlType="submit">Change Password</Button>
+                        </div>
+                    </Form.Item>
+                </Form>
+            </Col>
         </Row>
     )
 }
